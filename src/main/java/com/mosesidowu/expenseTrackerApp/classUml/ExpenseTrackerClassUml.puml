@@ -1,0 +1,170 @@
+@startuml
+
+
+top to bottom direction
+skinparam linetype ortho
+
+class ApiResponse {
+   data: Object
+   success: boolean
+}
+class CorsConfig
+class DeleteExpenseRequest {
+   expenseId: String
+   userId: String
+}
+class Expense {
+   expenseDate: LocalDate
+   expenseTitle: String
+   expenseAmount: double
+   expenseId: String
+   category: String
+   expenseDescription: String
+   userId: String
+}
+class ExpenseController
+class ExpenseException
+class ExpenseIdRequest {
+   currencyCode: String
+   expenseId: String
+   userId: String
+}
+class ExpenseRequest {
+   expenseDate: LocalDate
+   expenseTitle: String
+   expenseAmount: double
+   currencyCode: String
+   category: String
+   expenseDescription: String
+   userId: String
+}
+class ExpenseResponse {
+   description: String
+   title: String
+   formattedAmount: String
+   expenseAmount: double
+   createdAt: LocalDate
+   category: String
+   id: String
+}
+interface ExpenseService << interface >>
+class ExpenseServiceImpl
+class ExpenseServiceImplTest
+interface ExpensesRepository << interface >>
+class ExpensesRepositoryTest
+class FilterByCategoryRequest {
+   category: String
+   currencyCode: String
+   userId: String
+}
+class FilterByDateRangeRequest {
+   endDate: LocalDate
+   currencyCode: String
+   startDate: LocalDate
+   userId: String
+}
+class GetExpenseRequest {
+   currencyCode: String
+   expenseId: String
+   userId: String
+}
+class Helper
+class LoginUserResponse {
+   email: String
+   message: String
+   userId: String
+}
+class LogingUserRequest {
+   email: String
+   password: String
+}
+class Main
+class Mapper
+class NotFoundException
+class RegisterUserRequest {
+   email: String
+   password: String
+   username: String
+}
+class RegisterUserResponse {
+   username: String
+   email: String
+   id: String
+   message: String
+}
+class SearchExpenseByTitleRequest {
+   currencyCode: String
+   title: String
+   userId: String
+}
+class TotalExpenseRequest {
+   currencyCode: String
+   userId: String
+}
+class TotalExpenseResponse {
+   totalAmount: String
+}
+class UpdateExpenseRequest {
+   expenseDate: LocalDate
+   expenseTitle: String
+   expenseAmount: double
+   expenseId: String
+   currencyCode: String
+   category: String
+   expenseDescription: String
+   userId: String
+}
+class User {
+   password: String
+   username: String
+   email: String
+   userId: String
+}
+class UserController
+class UserException
+class UserIdRequest {
+   userId: String
+}
+class UserNotFoundException
+interface UserRepository << interface >>
+interface UserService << interface >>
+class UserServiceImpl
+class UserServiceImplTest
+class UsernameNotFoundException
+
+ExpenseController           "1" *-[#595959,plain]-> "expenseService\n1" ExpenseService
+ExpenseException             -[#000082,plain]-^  UserException
+ExpenseServiceImpl           -[#008200,dashed]-^  ExpenseService
+ExpenseServiceImpl          "1" *-[#595959,plain]-> "expenseRepository\n1" ExpensesRepository
+ExpenseServiceImpl           -[#595959,dashed]->  TotalExpenseRequest         : "«create»"
+ExpenseServiceImpl           -[#595959,dashed]->  TotalExpenseResponse        : "«create»"
+ExpenseServiceImpl           -[#595959,dashed]->  UserException               : "«create»"
+ExpenseServiceImpl          "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+ExpenseServiceImpl          "1" *-[#595959,plain]-> "userService\n1" UserService
+ExpenseServiceImplTest       -[#595959,dashed]->  Expense                     : "«create»"
+ExpenseServiceImplTest       -[#595959,dashed]->  ExpenseRequest              : "«create»"
+ExpenseServiceImplTest      "1" *-[#595959,plain]-> "expenseService\n1" ExpenseService
+ExpenseServiceImplTest      "1" *-[#595959,plain]-> "expensesRepository\n1" ExpensesRepository
+ExpenseServiceImplTest       -[#595959,dashed]->  TotalExpenseRequest         : "«create»"
+ExpenseServiceImplTest       -[#595959,dashed]->  User                        : "«create»"
+ExpenseServiceImplTest      "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+ExpensesRepositoryTest       -[#595959,dashed]->  Expense                     : "«create»"
+ExpensesRepositoryTest      "1" *-[#595959,plain]-> "testExpense\n1" Expense
+ExpensesRepositoryTest      "1" *-[#595959,plain]-> "expensesRepository\n1" ExpensesRepository
+NotFoundException            -[#000082,plain]-^  UserException
+UserController              "1" *-[#595959,plain]-> "userService\n1" UserService
+UserNotFoundException        -[#000082,plain]-^  UserException
+UserServiceImpl             "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+UserServiceImpl              -[#008200,dashed]-^  UserService
+UserServiceImplTest         "1" *-[#595959,plain]-> "loginUserResponse\n1" LoginUserResponse
+UserServiceImplTest          -[#595959,dashed]->  LoginUserResponse           : "«create»"
+UserServiceImplTest          -[#595959,dashed]->  LogingUserRequest           : "«create»"
+UserServiceImplTest         "1" *-[#595959,plain]-> "logingUserRequest\n1" LogingUserRequest
+UserServiceImplTest         "1" *-[#595959,plain]-> "registerUserRequest\n1" RegisterUserRequest
+UserServiceImplTest          -[#595959,dashed]->  RegisterUserRequest         : "«create»"
+UserServiceImplTest          -[#595959,dashed]->  RegisterUserResponse        : "«create»"
+UserServiceImplTest         "1" *-[#595959,plain]-> "registerUserResponse\n1" RegisterUserResponse
+UserServiceImplTest         "1" *-[#595959,plain]-> "userRepository\n1" UserRepository
+UserServiceImplTest         "1" *-[#595959,plain]-> "userService\n1" UserService
+UsernameNotFoundException    -[#000082,plain]-^  UserException
+@enduml
