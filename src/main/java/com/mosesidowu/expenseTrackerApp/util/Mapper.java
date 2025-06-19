@@ -9,6 +9,7 @@ import com.mosesidowu.expenseTrackerApp.dtos.response.ExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.LoginUserResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.RegisterUserResponse;
 import com.mosesidowu.expenseTrackerApp.exception.ExpenseException;
+import com.mosesidowu.expenseTrackerApp.exception.UserException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -133,6 +134,8 @@ public class Mapper {
         isValidAmount(request.getExpenseAmount());
         isValidCategory(request.getCategory());
         isValidDate(request.getExpenseDate());
+        isValidId(request.getExpenseId());
+        isValidId(request.getUserId());
     }
 
 
@@ -143,6 +146,7 @@ public class Mapper {
         isValidCategory(request.getCategory());
         isValidAmount(request.getExpenseAmount());
         isValidDate(request.getExpenseDate());
+        isValidId(request.getExpenseId());
     }
 
 
@@ -153,33 +157,39 @@ public class Mapper {
         isValidAmount(request.getExpenseAmount());
         isValidCategory(request.getCategory());
         isValidDate(request.getExpenseDate());
+        isValidId(request.getUserId());
+    }
+
+    private static void isValidId(String id){
+        boolean isNotValidId = id == null || id.isEmpty();
+        if (isNotValidId) throw new UserException("Invalid id.");
     }
 
     private static void isValidTitle(String title) {
-        boolean isValidExpenseTitle = title == null || title.isEmpty();
-        if (!isValidExpenseTitle) throw new ExpenseException("Expense Title cannot be empty");
+        boolean isNotValidExpenseTitle = title == null || title.isEmpty();
+        if (isNotValidExpenseTitle) throw new ExpenseException("Expense Title cannot be empty");
     }
 
     private static void isValidDate(LocalDate date) {
-        boolean isValidExpenseDate = date == null;
-        if (!isValidExpenseDate) throw new ExpenseException("Expense Date cannot be empty");
+        boolean isNotValidExpenseDate = date == null;
+        if (isNotValidExpenseDate) throw new ExpenseException("Expense Date cannot be empty");
     }
 
 
     private static void isValidCategory(String category) {
-        boolean isValidCategory = category == null || category.isEmpty();
-        if (!isValidCategory) throw new ExpenseException("Category cannot be empty");
+        boolean isNotValidCategory = category == null || category.isEmpty();
+        if (isNotValidCategory) throw new ExpenseException("Category cannot be empty");
     }
 
 
     private static void isValidAmount(double amount) {
-        boolean isValidExpenseAmount = amount <= 0;
-        if (!isValidExpenseAmount) throw new ExpenseException("Enter valid amount");
+        boolean isNotValidExpenseAmount = amount <= 0;
+        if (isNotValidExpenseAmount) throw new ExpenseException("Enter valid amount");
     }
 
     private static void isValidDescription(String description) {
-        boolean  isValidExpenseDescription = description == null || description.isEmpty();
-        if (!isValidExpenseDescription) throw new ExpenseException("Expense Description cannot be empty");
+        boolean  isNotValidExpenseDescription = description == null || description.isEmpty();
+        if (isNotValidExpenseDescription) throw new ExpenseException("Expense Description cannot be empty");
     }
 
 }
