@@ -29,7 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseResponse addExpense(ExpenseRequest request) {
-        Helper.validateCreateRequest(request);
+//        Helper.validateCreateRequest(request);
         Expense expense = Mapper.toExpense(request);
         Expense saved = expenseRepository.save(expense);
 
@@ -39,7 +39,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseResponse updateExpense(UpdateExpenseRequest request) {
-        Helper.validateUpdateRequest(request);
+//        Helper.validateUpdateRequest(request);
 
         Expense expense = Helper.getExpenseByIdAndUserId(expenseRepository, request.getExpenseId(), request.getUserId());
         Expense updated = getExpense(request, expense);

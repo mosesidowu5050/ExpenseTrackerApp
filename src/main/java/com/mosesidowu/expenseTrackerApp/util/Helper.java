@@ -6,47 +6,12 @@ import com.mosesidowu.expenseTrackerApp.dtos.request.DeleteExpenseRequest;
 import com.mosesidowu.expenseTrackerApp.dtos.request.ExpenseRequest;
 import com.mosesidowu.expenseTrackerApp.dtos.request.UpdateExpenseRequest;
 import com.mosesidowu.expenseTrackerApp.exception.ExpenseException;
+import com.mosesidowu.expenseTrackerApp.exception.UserException;
 
 import java.util.*;
 
 public class Helper {
 
-    public static void validateCreateRequest(ExpenseRequest request) {
-        if (request.getUserId() == null || request.getUserId().isEmpty()) {
-            throw new IllegalArgumentException("User ID is required");
-        }
-        if (request.getExpenseTitle() == null || request.getExpenseTitle().isEmpty()) {
-            throw new IllegalArgumentException("Expense title is required");
-        }
-        if (request.getExpenseAmount() <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0");
-        }
-    }
-
-    public static void validateUpdateRequest(UpdateExpenseRequest request) {
-        if (request.getExpenseId() == null || request.getExpenseId().isEmpty()) {
-            throw new IllegalArgumentException("Expense ID is required");
-        }
-
-        validateCreateRequest(new ExpenseRequest(
-                request.getUserId(),
-                request.getExpenseTitle(),
-                request.getExpenseDescription(),
-                request.getExpenseAmount(),
-                request.getCategory(),
-                request.getExpenseDate(),
-                request.getCurrencyCode()
-        ));
-    }
-
-    public static void validateDeleteRequest(DeleteExpenseRequest request) {
-        if (request.getExpenseId() == null || request.getExpenseId().isEmpty()) {
-            throw new IllegalArgumentException("Expense ID is required");
-        }
-        if (request.getUserId() == null || request.getUserId().isEmpty()) {
-            throw new IllegalArgumentException("User ID is required");
-        }
-    }
 
     public static Expense getExpenseByIdAndUserId(ExpensesRepository repository, String expenseId, String userId) {
         return repository.findByExpenseIdAndUserId(expenseId, userId)
