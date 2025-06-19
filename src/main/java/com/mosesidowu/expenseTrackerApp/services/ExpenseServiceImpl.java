@@ -7,27 +7,25 @@ import com.mosesidowu.expenseTrackerApp.dtos.request.*;
 import com.mosesidowu.expenseTrackerApp.dtos.response.ExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.TotalExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.exception.UserException;
-import com.mosesidowu.expenseTrackerApp.exception.UserNotFoundException;
 import com.mosesidowu.expenseTrackerApp.util.Helper;
 import com.mosesidowu.expenseTrackerApp.util.Mapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+
+import static com.mosesidowu.expenseTrackerApp.util.Mapper.*;
+
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
     @Autowired
     private ExpensesRepository expenseRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserService userService;
 
 
     @Override
@@ -44,16 +42,13 @@ public class ExpenseServiceImpl implements ExpenseService {
         Helper.validateUpdateRequest(request);
 
         Expense expense = Helper.getExpenseByIdAndUserId(expenseRepository, request.getExpenseId(), request.getUserId());
-
-        expense.setExpenseTitle(request.getExpenseTitle());
-        expense.setExpenseDescription(request.getExpenseDescription());
-        expense.setExpenseAmount(request.getExpenseAmount());
-        expense.setCategory(request.getCategory());
-        expense.setExpenseDate(request.getExpenseDate());
-        Expense updated = expenseRepository.save(expense);
+        Expense updated = getExpense(request, expense);
+        expenseRepository.save(updated);
 
         return Mapper.toExpenseResponse(updated, request.getCurrencyCode());
     }
+
+
 
     @Override
     public void deleteExpense(String expenseId, String userId) {
@@ -83,41 +78,30 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 
     @Override
-    public List<ExpenseResponse> searchExpensesByTitle(SearchExpenseByTitleRequest request) {
-        List<Expense> expenses = expenseRepository.findByUserIdAndExpenseTitleContainingIgnoreCase(request.getUserId(), request.getTitle());
+    public List<ExpenseResponse> searchExpensesByTitle(String userId, String title) {
+        List<Expense> expenses = expenseRepository.findByUserIdAndExpenseTitleContainingIgnoreCase(userId, title);
         List<ExpenseResponse> responses = new ArrayList<>();
 
         for (Expense exp : expenses) {
-            responses.add(Mapper.toExpenseResponse(exp, request.getCurrencyCode()));
+            responses.add(Mapper.toExpense(exp));
         }
 
         return responses;
     }
+
 
     @Override
-    public List<ExpenseResponse> filterByCategory(FilterByCategoryRequest request) {
-        List<Expense> expenses = expenseRepository.findByUserIdAndCategory(request.getUserId(), request.getCategory());
+    public List<ExpenseResponse> filterByCategory(String userId, String category) {
+        List<Expense> expenses = expenseRepository.findByUserIdAndCategory(userId, category);
         List<ExpenseResponse> responses = new ArrayList<>();
 
         for (Expense exp : expenses) {
-            responses.add(Mapper.toExpenseResponse(exp, request.getCurrencyCode()));
+            responses.add(Mapper.toExpense(exp));
         }
 
         return responses;
     }
 
-    @Override
-    public List<ExpenseResponse> filterByDateRange(FilterByDateRangeRequest request) {
-        List<Expense> expenses = expenseRepository.findByUserIdAndExpenseDateBetween(
-                request.getUserId(), request.getStartDate(), request.getEndDate());
-
-        List<ExpenseResponse> responses = new ArrayList<>();
-        for (Expense exp : expenses) {
-            responses.add(Mapper.toExpenseResponse(exp, request.getCurrencyCode()));
-        }
-
-        return responses;
-    }
 
     @Override
     public TotalExpenseResponse getTotalExpense(String userId) {
@@ -131,27 +115,23 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
 
+    public List<ExpenseResponse> filterByDateRange(String userId, LocalDate startDate, LocalDate endDate) {
+        validateDate(startDate, endDate);
 
-//    private String generateUniqueId() {
-//        char[] characters = {
-//                '1','2','3','4','5','6','7','8','9','0',
-//                'a','b','c','d','e','f','g','h','i','j',
-//                'k','l','m','n','o','p','q','r','s','t',
-//                'u','v','w','x','y','z'
-//        };
-//
-//        Random random = new Random();
-//        String savedId;
-//
-//        do {
-//            savedId = "";
-//            for (int i = 0; i < 6; i++) {
-//                int index = random.nextInt(characters.length);
-//                savedId += characters[index];
-//            }
-//        } while (expenseRepository.findExpenseByExpenseId(savedId).isPresent());
-//
-//        return savedId.toUpperCase();
-//    }
+        Date from = Date.from(startDate.atStartOfDay(ZoneOffset.UTC).toInstant());
+        Date to = Date.from(endDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant());
+        List<Expense> expenses = expenseRepository.findByUserIdAndExpenseDateBetween(
+                userId, from, to
+        );
+
+        return getExpenseResponses(expenses);
+    }
+
+
+
+    private static void validateDate(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) throw new UserException("Start and end dates must not be null.");
+        if (startDate.isAfter(endDate)) throw new UserException("Start date cannot be after end date.");
+    }
 
 }

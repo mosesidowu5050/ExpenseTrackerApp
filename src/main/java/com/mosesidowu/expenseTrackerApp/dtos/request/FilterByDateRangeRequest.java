@@ -10,5 +10,5 @@ public class FilterByDateRangeRequest {
     private String userId;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String currencyCode;
+
 }

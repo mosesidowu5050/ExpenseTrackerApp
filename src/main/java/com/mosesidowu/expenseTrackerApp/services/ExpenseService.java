@@ -3,9 +3,8 @@ package com.mosesidowu.expenseTrackerApp.services;
 import com.mosesidowu.expenseTrackerApp.dtos.request.*;
 import com.mosesidowu.expenseTrackerApp.dtos.response.ExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.TotalExpenseResponse;
-import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseService {
@@ -16,13 +15,13 @@ public interface ExpenseService {
 
     ExpenseResponse getExpenseById(ExpenseIdRequest request);
 
-    public List<ExpenseResponse> getAllExpenses(String userId);
+    List<ExpenseResponse> getAllExpenses(String userId);
 
-    List<ExpenseResponse> searchExpensesByTitle(SearchExpenseByTitleRequest request);
+    List<ExpenseResponse> searchExpensesByTitle(String userId, String title);
 
-    List<ExpenseResponse> filterByCategory(FilterByCategoryRequest request);
+    List<ExpenseResponse> filterByCategory(String userId, String category);
 
-    List<ExpenseResponse> filterByDateRange(FilterByDateRangeRequest request);
+    List<ExpenseResponse> filterByDateRange(String userId, LocalDate startDate, LocalDate endDate);
 
     TotalExpenseResponse getTotalExpense(String userId);
 

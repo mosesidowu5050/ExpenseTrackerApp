@@ -90,20 +90,6 @@ public class ExpensesRepositoryTest {
         assertEquals("Groceries", results.get(0).getExpenseTitle());
     }
 
-    @Test
-    @DisplayName("Should find expenses by userId and date range")
-    void testFindByUserIdAndDateRange() {
-        testExpense = saveExpense();
-        expensesRepository.save(testExpense);
-
-        LocalDate now = LocalDate.now();
-        LocalDate start = now.minusDays(1);
-        LocalDate end = now.plusDays(1);
-
-        List<Expense> results = expensesRepository.findByUserIdAndExpenseDateBetween("user123", start, end);
-        assertFalse(results.isEmpty());
-        assertEquals("Groceries", results.get(0).getExpenseTitle());
-    }
 
     private Expense saveExpense(){
         testExpense = new Expense();

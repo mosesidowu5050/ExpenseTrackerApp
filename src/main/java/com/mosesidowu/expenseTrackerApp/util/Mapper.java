@@ -4,10 +4,14 @@ import com.mosesidowu.expenseTrackerApp.data.models.Expense;
 import com.mosesidowu.expenseTrackerApp.data.models.User;
 import com.mosesidowu.expenseTrackerApp.dtos.request.ExpenseRequest;
 import com.mosesidowu.expenseTrackerApp.dtos.request.RegisterUserRequest;
+import com.mosesidowu.expenseTrackerApp.dtos.request.UpdateExpenseRequest;
 import com.mosesidowu.expenseTrackerApp.dtos.response.ExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.LoginUserResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.RegisterUserResponse;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -77,5 +81,34 @@ public class Mapper {
         response.setFormattedAmount(Helper.formatAmountWithAmount(expense.getExpenseAmount()));
 
         return response;
+    }
+
+    public static Expense getExpense(UpdateExpenseRequest request, Expense expense) {
+        expense.setExpenseTitle(request.getExpenseTitle());
+        expense.setExpenseDescription(request.getExpenseDescription());
+        expense.setExpenseAmount(request.getExpenseAmount());
+        expense.setCategory(request.getCategory());
+        expense.setExpenseDate(request.getExpenseDate());
+
+        return expense;
+    }
+
+
+    public static List<ExpenseResponse> getExpenseResponses(List<Expense> expenses) {
+        List<ExpenseResponse> responses = new ArrayList<>();
+        for (Expense expense : expenses) {
+            ExpenseResponse response = new ExpenseResponse();
+            response.setId(expense.getExpenseId());
+            response.setTitle(expense.getExpenseTitle());
+            response.setCategory(expense.getCategory());
+            response.setExpenseAmount(expense.getExpenseAmount());
+            response.setCreatedAt(expense.getExpenseDate());
+            response.setDescription(expense.getExpenseDescription());
+            response.setFormattedAmount(Helper.formatAmountWithAmount(expense.getExpenseAmount()));
+
+            responses.add(response);
+        }
+
+        return responses;
     }
 }

@@ -7,12 +7,11 @@ import com.mosesidowu.expenseTrackerApp.dtos.response.LoginUserResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.RegisterUserResponse;
 import com.mosesidowu.expenseTrackerApp.exception.UserException;
 import com.mosesidowu.expenseTrackerApp.services.UserService;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest registerUserRequest){
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest registerUserRequest) {
         try {
             RegisterUserResponse response = userService.register(registerUserRequest);
             return new ResponseEntity<>(new ApiResponse(response, true), CREATED);
@@ -33,14 +32,16 @@ public class UserController {
         }
     }
 
+
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LogingUserRequest logingUserRequest) {
         try {
             LoginUserResponse response = userService.login(logingUserRequest);
             return new ResponseEntity<>(new ApiResponse(response, true), OK);
+
         } catch (UserException e) {
             return new ResponseEntity<>(new ApiResponse(e.getMessage(), false), BAD_REQUEST);
         }
     }
-
 }

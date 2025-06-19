@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegisterUserResponse register(RegisterUserRequest registerUserRequest) {
         validateUsername(registerUserRequest.getUsername());
-        validateEmail(registerUserRequest.getEmail());
+        isEmailPresent(registerUserRequest.getEmail());
         validateEmailPattern(registerUserRequest.getEmail());
 
         User user = userMapper(registerUserRequest);
@@ -34,13 +34,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginUserResponse login(LogingUserRequest logingUserRequest) {
-        User user = userRepository.findUserByEmail(logingUserRequest.getEmail())
-                .orElseThrow(() -> new UserException("Email doesn't match"));
-        validatePassword(logingUserRequest.getPassword());
+        User user = confirmUserLoginDetail(logingUserRequest);
 
         return userMapper(user);
     }
 
+
+
+    private User confirmUserLoginDetail(LogingUserRequest logingUserRequest) {
+        User user = userRepository.findUserByEmail(logingUserRequest.getEmail())
+                .orElseThrow(() -> new UserException("Email doesn't match"));
+        validatePassword(logingUserRequest.getPassword());
+
+        return user;
+    }
 
     private void validatePassword(String password) {
         userRepository.findUserByPassword(password).orElseThrow(() -> new UserException("Invalid Password"));
@@ -48,18 +55,15 @@ public class UserServiceImpl implements UserService {
 
     private void validateUsername(String username) {
         Optional<User> user = userRepository.findUserByUsername(username);
-        if (!username.matches("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{5,}$")) {
+        if (!username.matches("^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{5,}$"))
             throw new UserException("Username must be at least 5 characters and contain both letters and numbers.");
-        }
-        if (user.isPresent()) {
-            throw new UserException("Username already exists.");
-        }
+
+        if (user.isPresent()) throw new UserException("Username already exists.");
+
     }
 
-    private void validateEmail(String email) {
-        if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new UserException("Email already exists.");
-        }
+    private void isEmailPresent(String email) {
+        if (userRepository.findUserByEmail(email).isPresent()) throw new UserException("Email already exists.");
     }
 
     private void validateEmailPattern(String email) {

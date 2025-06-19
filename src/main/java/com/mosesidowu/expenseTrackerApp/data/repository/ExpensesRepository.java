@@ -5,6 +5,7 @@ import com.mosesidowu.expenseTrackerApp.data.models.Expense;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +19,8 @@ public interface ExpensesRepository extends MongoRepository<Expense,String> {
 
     List<Expense> findByUserIdAndCategory(String userId, String category);
 
-    List<Expense> findByUserIdAndExpenseDateBetween(String userId, LocalDate start, LocalDate end);
+    List<Expense> findByUserIdAndExpenseDateBetween(String userId, Date start, Date end);
 
-    Optional<Expense> findByExpenseId(String expenseId);
     List<Expense> findExpenseByExpenseTitle(String groceries);
     Optional<Expense> findExpenseByExpenseId(String nonExistent);
 }
