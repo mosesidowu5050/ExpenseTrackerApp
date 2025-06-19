@@ -2,7 +2,6 @@ package com.mosesidowu.expenseTrackerApp.services;
 
 import com.mosesidowu.expenseTrackerApp.data.models.Expense;
 import com.mosesidowu.expenseTrackerApp.data.repository.ExpensesRepository;
-import com.mosesidowu.expenseTrackerApp.data.repository.UserRepository;
 import com.mosesidowu.expenseTrackerApp.dtos.request.*;
 import com.mosesidowu.expenseTrackerApp.dtos.response.ExpenseResponse;
 import com.mosesidowu.expenseTrackerApp.dtos.response.TotalExpenseResponse;
@@ -36,6 +35,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         return Mapper.toExpenseResponse(saved, request.getCurrencyCode());
     }
+
 
     @Override
     public ExpenseResponse updateExpense(UpdateExpenseRequest request) {
