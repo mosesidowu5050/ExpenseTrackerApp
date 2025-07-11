@@ -47,7 +47,7 @@ public class UserServiceImplTest {
         logingUserRequest.setPassword("1234");
         loginUserResponse = userService.login(logingUserRequest);
         assertNotNull(loginUserResponse);
-        assertEquals("Login Successfully",  loginUserResponse.getMessage());
+        assertEquals("Login successfully",  loginUserResponse.getMessage());
     }
 
     @Test
