@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy the entire project into the container
 COPY . .
 
-#RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 FROM eclipse-temurin:21-jre-alpine
 # Set the working directory for the runtime stage
